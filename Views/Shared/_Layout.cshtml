@@ -1,0 +1,301 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+@using MyLaptopWebsite.Utils;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <!-- google font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <!-- css -->
+    <link rel="stylesheet" href="~/css/shared/default.css" runat="server" />
+    <link rel="stylesheet" href="~/css/shared/default_responsive.css" runat="server" />
+    <link rel="stylesheet" href="~/css/login.css" runat="server" />
+    <link rel="stylesheet" href="~/css/login_responsive.css" runat="server" />
+    @RenderSection("Style", false)
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Start top -->
+        <div class="top">
+            <p>
+                <ion-icon name="laptop-outline"></ion-icon> Chiến thần
+                Laptop
+            </p>
+            <p>
+                <ion-icon name="call"></ion-icon> Hotline:
+                0123456789
+            </p>
+            <p class="social">
+                <a href="#">
+                    <ion-icon name="logo-facebook"></ion-icon>
+                    Facebook
+                </a>
+                <a href="#">
+                    <ion-icon name="logo-twitter"></ion-icon>
+                    Twitter
+                </a>
+                <a href="#">
+                    <ion-icon name="logo-instagram"></ion-icon>
+                    Instagram
+                </a>
+            </p>
+        </div>
+        <!-- End top -->
+        <!-- Start header -->
+        <div class="header">
+            <a asp-action="Index" asp-controller="Home" asp-area="" class="logo">
+                <img src="~/images/logo.jpg" alt="logo" />
+                <div>
+                    <h2>Laptop World</h2>
+                    <h4>Technology</h4>
+                </div>
+            </a>
+            <!--start # Search box-->
+            <form asp-action="Search" asp-controller="Shop" asp-area="" method="get" class="search-container">
+                <input type="text" name="q" id="q" />
+                <button type="submit"><ion-icon name="search-outline"></ion-icon></button>
+            </form>
+            <!--End # Search box-->
+            <div class="nav">
+                <ul>
+                    <li>
+                        <a asp-controller="Shop" asp-action="Index" asp-area="">
+                            <ion-icon name="storefront"></ion-icon>
+                            <span>Cửa hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Cart" asp-action="Index" asp-area="" class="pos-r">
+                            <ion-icon name="cart"></ion-icon> <span>Giỏ hàng</span>
+                            @{
+                                var cart = Context.Session.Get<List<CartDetail>>("cart");
+
+                                                <span class="badge pos-a" style="@((cart != null && cart.Count() != 0) ? "padding: 2px 4px;" : "")">
+                                                    @((cart != null && cart.Count() != 0) ? cart.Count() : "")
+                                                </span>
+                            }
+                        </a>
+                    </li>
+                    <li id="login-render-content">
+                        @{
+                            var user = Context.Session.Get<NguoiDung>("user");
+                            if(user == null)
+                            {
+                                // nút hiển thị form đăng nhập
+                                                    <a onclick="toggleModal('#user-form-modal')">
+                                                    <ion-icon name="log-in"></ion-icon> <span>Đăng nhập</span>
+                                                    </a>
+                                
+                            }
+                            else
+                            {
+                                                    <a asp-action="Profile" asp-area="" asp-controller="User">
+                                                    <ion-icon name="person"></ion-icon> <span>@user.TenNguoiDung</span>
+                                                    </a>
+                            }
+                        }
+                        
+                    </li>
+                    <li>
+                        <a href="#"><ion-icon name="notifications"></ion-icon> <span>Thông báo</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- End header -->
+        <!-- Start center -->
+        @if(user == null)
+        {
+            // start # modal đăng nhập
+            <div class="modal" id="user-form-modal">
+                <div class="modal-overlay"></div>
+                <div class="modal-content" style="height: max-content;">
+                    <div class="modal-content-header">
+                        <h3>Đăng nhập / Đăng ký</h3>
+                        <span class="close-modal-btn"><ion-icon name="close-outline"></ion-icon></span>
+                    </div>
+                    <div class="modal-content-body">
+                        <p class="errorMessage" id="modelMessage"></p>
+                        <form id="user-form">
+                            <partial name="_pvLoginForm" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            // end # modal đăng nhập
+        }
+        @RenderBody()
+        <div class="footer">
+            <div class="footer-item">
+                <div class="footer-item-title">
+                    Kết nối với chúng tôi
+                </div>
+                <div>
+                    <img src="~/images/cellphones-facebook.webp" alt="">
+                    <img src="~/images/cellphones-instagram.webp" alt="">
+                    <img src="~/images/cellphones-tiktok.webp" alt="">
+                    <img src="~/images/cellphones-youtube.webp" alt="">
+                    <img src="~/images/cellphones-zalo.webp" alt="">
+                </div>
+                <div class="footer-item-title">
+                    Phương thức thanh toán
+                </div>
+                <div>
+                    <img src="~/images/alepay-logo.webp" alt="">
+                    <img src="~/images/apple-pay-og.webp" alt="">
+                    <img src="~/images/fundiin.webp" alt="">
+                    <img src="~/images/zalopay-logo.webp" alt="">
+                    <img src="~/images/kredivo-logo.webp" alt="">
+                    <img src="~/images/zalopay-logo.webp" alt="">
+                    <img src="~/images/mpos-logo.webp" alt="">
+                </div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-item-title">
+                    Dịch vụ và thông tin khác
+                </div>
+                <div class="footer-item-content">
+                    <p>Khách hàng doanh nghiệp (B2B)</p>
+                    <p>Ưu đãi thanh toán</p>
+                    <p>Quy chế hoạt động</p>
+                    <p>Chính sách Bảo hành</p>
+                    <p>Liên hệ hợp tác kinh doanh</p>
+                    <p>Tuyển dụng</p>
+                    <p>Dịch vụ bảo hành điện thoại</p>
+                    <p>Dịch vụ bảo hành mở rộng</p>
+                </div>
+            </div>
+            <div class="footer-item">
+                <div class="footer-item-title">
+                    Thông tin và chính sách
+                </div>
+                <div class="footer-item-content">
+                    <p>Mua hàng và thanh toán Online</p>
+                    <p>Mua hàng trả góp Online</p>
+                    <p>Chính sách giao hàng</p>
+                    <p>Tra thông tin bảo hành</p>
+                    <p>Tra cứu hoá đơn điện tử</p>
+                    <p>Thông tin hoá đơn mua hàng</p>
+                    <p>Trung tâm bảo hành chính hãng</p>
+                    <p>Quy định về việc sao lưu dữ liệu</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toast-container"></div>
+    <script src="~/js/validator.js"></script>
+    <script src="~/js/toast.js"></script>
+    <script src="~/js/main.js"></script>
+    <!-- Typed animation JS -->
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    @await RenderSectionAsync("Script", false);
+    <script>
+        Validator({
+            formSelector: '#user-form',
+            errorElement: '.errorMessage',
+            invalidClass: 'invalid',
+            rules: [
+                Validator.required('#Email', "Hãy nhập vào trường này"),
+                Validator.isEmail('#Email'),
+                Validator.required('#Password', "Hãy nhập vào trường này"),
+                Validator.minLength('#Password', 8, "Hãy nhập ít nhất 8 ký tự"),
+            ],
+            onSubmit: function () { submitUserForm(); }
+        });
+
+        function renderForm(formType) {
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                document.querySelector('#user-form-modal .modal-content-body form').innerHTML = this.responseText;
+
+                // validator form đăng ký
+                if (document.querySelector('input[name="signUpBtn"]')) {
+                    Validator({
+                        formSelector: '#user-form',
+                        errorElement: '.errorMessage',
+                        invalidClass: 'invalid',
+                        rules: [
+                            Validator.required('#Username', "Hãy nhập vào trường này"),
+                            Validator.required('#Password', "Hãy nhập vào trường này"),
+                            Validator.minLength('#Password', 8, "Hãy nhập ít nhất 8 ký tự"),
+                            Validator.required('#Email', "Hãy nhập vào trường này"),
+                            Validator.isEmail('#Email'),
+                            Validator.equalTo('#confirmPassword', function () {
+                                return document.querySelector('#Password').value;
+                            }, "Giá trị không trùng khớp"),
+                        ],
+                        onSubmit: function () { submitUserForm(); }
+                    });
+                }
+                else {
+                    Validator({
+                        formSelector: '#user-form',
+                        errorElement: '.errorMessage',
+                        invalidClass: 'invalid',
+                        rules: [
+                            Validator.required('#Email', "Hãy nhập vào trường này"),
+                            Validator.isEmail('#Email'),
+                            Validator.required('#Password', "Hãy nhập vào trường này"),
+                            Validator.minLength('#Password', 8, "Hãy nhập ít nhất 8 ký tự"),
+                        ],
+                        onSubmit: function () { submitUserForm(); }
+                    });
+                }
+                // submitUserForm();
+            }
+
+            var url = `/User/RenderForm?form=${formType}`;
+
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+
+        function submitUserForm() {
+            var form = document.querySelector('#user-form');
+            if (form) {
+                    const xhttp = new XMLHttpRequest();
+
+                    xhttp.onload = function () {
+                        var res = JSON.parse(this.responseText);
+                        if (!res['status']) { // đăng nhập thất bại
+                            document.querySelector('#modelMessage').innerHTML = res['error'];
+                        }
+                        else { // đăng nhập thành công
+                            toggleModal('#user-form-modal'); // đóng modal đăng nhập
+
+                            var loginContent = document.querySelector('#login-render-content');
+                            if (loginContent) {
+                                loginContent.innerHTML = `<a href="/User/Profile">
+                                                        <ion-icon name="person"></ion-icon> ${res['uname']}
+                                                    </a>`;
+                            }
+
+                            // nếu đang trong trang giỏ hàng
+                            var purchaseButton = document.querySelector('#purchase-btn');
+                            if (purchaseButton) {
+                            purchaseButton.innerHTML = `<button class="order-btn" onclick="toggleModal('#purchase-form-modal')"><ion-icon name="cart-outline"></ion-icon> Mua hàng</button>`;
+                            }
+                        var comment = document.querySelector('.product-main-info'); // đang ở trang comment
+                            console.log(comment);
+                            if (comment) {
+                                window.location.reload();
+                            }
+                        }
+                    }
+                    var submitter = form.querySelector('input[type=submit]');
+                    var formData = new FormData(form, submitter);
+                    var url = `/User/Submit`;
+
+                    xhttp.open("POST", url);
+                    xhttp.send(formData);
+            }
+        }
+    </script>
+</body>
+</html>

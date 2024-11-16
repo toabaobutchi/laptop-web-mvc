@@ -1,0 +1,121 @@
+﻿
+<!-- Start header -->
+<div class="header">
+    <a asp-action="Index" asp-controller="Home" asp-area="" class="logo">
+        <img src="~/images/logo.jpg" alt="logo" />
+        <div>
+            <h2>Laptop World</h2>
+            <h4>Technology</h4>
+        </div>
+    </a>
+    <div class="search-container">
+        <input type="text" id="search-input" />
+        <button><ion-icon name="search-outline"></ion-icon></button>
+    </div>
+    <div class="nav">
+        <ul>
+            <li class="nav-menu">
+                <a href="#">
+                    <ion-icon name="funnel"></ion-icon> Bộ lọc <ion-icon name="chevron-down-outline"></ion-icon>
+                </a>
+                <ul class="menu">
+                    <li>
+                        <p class="menu-title">Hãng</p>
+                        <ul>
+                            <li><a href="#">Dell</a></li>
+                            <li><a href="#">Asus</a></li>
+                            <li><a href="#">Acer</a></li>
+                            <li><a href="#">Lenovo</a></li>
+                            <li><a href="#">HP</a></li>
+                            <li><a href="#">Microsoft</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="menu-title">CPU</p>
+                        <ul>
+                            <li><a href="#">Core i3</a></li>
+                            <li><a href="#">Core i5</a></li>
+                            <li><a href="#">Core i7</a></li>
+                            <li><a href="#">Core i9</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="menu-title">Màn hình</p>
+                        <ul>
+                            <li><a href="#">12 inch</a></li>
+                            <li><a href="#">13 inch</a></li>
+                            <li><a href="#">14 inch</a></li>
+                            <li><a href="#">15.6 inch</a></li>
+                            <li><a href="#">16 inch</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <ion-icon name="storefront"></ion-icon>
+                    Cửa hàng
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <ion-icon name="cart"></ion-icon>
+                    Giỏ
+                    hàng
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <ion-icon name="log-in"></ion-icon>
+                    Đăng nhập
+                </a>
+            </li>
+            <li>
+                <a href="#"><ion-icon name="notifications"></ion-icon></a>
+            </li>
+        </ul>
+        <div class="mobile-nav">
+            <ion-icon name="reorder-four-outline" id="mobile-nav-toogle-button"
+                      onclick="toogleMobileNavigation()"></ion-icon>
+            <div class="mobile-nav-menu">
+                <div class="mobile-nav-menu-header">
+                    <ion-icon name="close-outline" onclick="toogleMobileNavigation()"></ion-icon>
+                    <i class="fa fa-close" style="font-size: 36px" onclick="toogleMobileNavigation()"></i>
+                </div>
+
+                <div class="mobile-nav-menu-content">
+                    <ul>
+                        <li>
+                            <a href="#">
+                                <ion-icon name="storefront-outline"></ion-icon>
+                                Cửa hàng
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#">
+                                <ion-icon name="cart-outline"></ion-icon>
+                                Giỏ hàng
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#">
+                                <ion-icon name="log-in-outline"></ion-icon>
+                                Đăng nhập
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#">
+                                <ion-icon name="notifications-outline"></ion-icon>
+                                Thông báo
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End header -->

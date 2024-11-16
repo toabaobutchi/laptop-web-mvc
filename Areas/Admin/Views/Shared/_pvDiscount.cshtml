@@ -1,0 +1,32 @@
+﻿@model SanPham
+@{
+    int discountValue = Model.ThongTinGiamGia == null ? 0 : Model.ThongTinGiamGia.MucGiamGia;
+}
+<h2 class="text-info"> Giảm giá cho sản phẩm</h2>
+
+@{
+    int count = ((SelectList)ViewBag.Dipgiamgia).Count();
+}
+
+@if(count > 0)
+{
+    <form asp-action="Discount" method="post">
+    <input type="hidden" name="pid" value="@Model.MaSp" />
+    <div class="mb-3">
+        <label for="magiamgia" class="form-label">Dịp giảm giá</label>
+        <select name="magiamgia" id="magiamgia" asp-items="ViewBag.Dipgiamgia" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Mức giảm giá</label>
+        <div class="input-group">
+            <input type="number" class="form-control" min="0" max="100" name="discount" value="@discountValue">
+            <span class="input-group-text">%</span>
+        </div>
+    </div>
+    <input type="submit" value="Giảm giá" class="btn btn-info"/>
+    </form>
+}
+else
+{
+    <h3 class="text-info">Hiện không có dịp giảm giá nào!</h3>
+}

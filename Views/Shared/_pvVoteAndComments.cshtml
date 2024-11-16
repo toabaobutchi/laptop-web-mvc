@@ -1,0 +1,137 @@
+﻿@using Microsoft.AspNetCore.Http
+@using MyLaptopWebsite.Utils
+@model SanPham
+@{
+    var user = Context.Session.Get<NguoiDung>("user");
+    DanhGia d = ViewBag.CurrentUserVote;
+}
+
+@if(user == null)
+{
+    <div style="text-align: center; width: 100%;">
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.865rem;">Hãy đăng nhập để đánh giá và bình luận</h3>
+        <a style="color: #fff; background-color: #090979; font-size: 1.1rem; font-weight: 600; border: none; outline: none;padding: 0.5rem 1rem; margin-top: 1rem; cursor: pointer;" onclick="toggleModal('#user-form-modal')">
+            Đăng nhập
+        </a>
+    </div>
+}
+else
+{
+    <div class="product-info-item vote-and-comment">
+    <div class="vote">
+        <h3>Đánh giá</h3>
+        <section class="pos-r">
+            <div class="current-votes">
+                    @if (Model != null)
+                    {
+                        <p>Đánh giá hiện tại trên sản phẩm</p>
+                        <p>
+                            @(Model.DanhGia.Count() != 0 ? Model.DanhGia.Average(d => d._DanhGia).ToString("F1") : 0) <ion-icon name="star" class="show"></ion-icon> (@Model.DanhGia.Count() đánh giá)
+                        </p>
+                    }
+                </div>
+            <div class="your-vote">
+                    @if (d == null) // khách hàng chưa đánh giá sản phẩm này
+                    {
+                        <p>Bạn muốn đánh giá sản phẩm này ?</p>
+                    }
+                    else
+                    {
+                        <p>Bạn đã đánh giá sản phẩm này</p>
+                        <p><span id="your-vote-star">@d._DanhGia</span> <ion-icon name="star" class="show"></ion-icon></p>
+                    }
+
+                <button onclick="toggleModal('.modal')">Đánh giá</button>
+                <div class="modal">
+                    <div class="modal-overlay"></div>
+                        <div class="modal-content" style="min-height: none; height: auto;">
+                        <div class="modal-content-header">
+                            <h4>Đánh giá @Model?.TenSp</h4>
+                            <span class="close-modal-btn"><ion-icon name="close-outline"></ion-icon></span>
+                        </div>
+                        <div class="modal-content-body">
+                                <form class="vote-form" asp-action="Vote" asp-controller="Shop" asp-area="">
+                                    <input type="hidden" name="id" value="@Model.MaSp" />
+                                    <div class="vote-item">
+                                        <input type="checkbox" value="1" name="voteStar" id="star-1">
+                                        <label for="star-1"><ion-icon name="star"></ion-icon></label>
+                                    </div>
+                                    <div class="vote-item">
+                                        <input type="checkbox" value="2" name="voteStar" id="star-2">
+                                        <label for="star-2"><ion-icon name="star"></ion-icon></label>
+                                    </div>
+                                    <div class="vote-item">
+                                        <input type="checkbox" value="3" name="voteStar" id="star-3">
+                                        <label for="star-3"><ion-icon name="star"></ion-icon></label>
+                                    </div>
+                                    <div class="vote-item">
+                                        <input type="checkbox" value="4" name="voteStar" id="star-4">
+                                        <label for="star-4"><ion-icon name="star"></ion-icon></label>
+                                    </div>
+                                    <div class="vote-item">
+                                        <input type="checkbox" value="5" name="voteStar" id="star-5">
+                                        <label for="star-5"><ion-icon name="star"></ion-icon></label>
+                                    </div>
+                                    <div>
+                                        <input type="submit" value="Đánh giá" name="vote-btn" />
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="comments">
+        <h3>Bình luận</h3>
+        <div class="comment-input">
+            <textarea name="cmt"></textarea>
+            <button onclick="addComment(@Model.MaSp)"><ion-icon name="paper-plane"></ion-icon></button>
+        </div>
+        <p style="background-color: lightgray; height: 1px; margin: 0.5rem;"></p>
+
+        <!-- Start comment history -->
+        <div class="comment-history">
+            <!-- Start comment item -->
+                @foreach(BinhLuan comment in ViewBag.Comments)
+                {
+                    <div class="comment-item">
+                        <div class="comment">
+                            <div class="user-info">
+                                <p class="avatar"><span><ion-icon name="help-outline"></ion-icon></span> @comment.MaNguoiDungNavigation.TenNguoiDung</p>
+                            </div>
+                            <div class="comment-text">
+                                <p>@comment.NoiDung</p>
+                                <p>
+                                    <button class="rep" onclick="createReplyTextField(this, @comment.MaBinhLuan, @Model.MaSp)">
+                                        <ion-icon name="chatbubble"></ion-icon> Trả lời
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                        @foreach(var reply in comment.InverseMaBinhLuanPhuThuocNavigation)
+                        {
+                            <div class="comment comment-reply">
+                                <div class="user-info">
+                                    <p class="avatar admin"><span><ion-icon name="chatbubbles"></ion-icon></span> @reply.MaNguoiDungNavigation.TenNguoiDung </p>
+                                </div>
+                                <div class="comment-text">
+                                    <p>@reply.NoiDung</p>
+                                    <p></p>
+                                    @* <p>
+                                        <button class="rep" onclick="createReplyTextField(this)">
+                                            <ion-icon name="chatbubble"></ion-icon> Trả lời
+                                        </button>
+                                    </p> *@
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            <!-- End comment item -->
+        </div>
+        <!-- End comment history -->
+    </div>
+</div>
+}

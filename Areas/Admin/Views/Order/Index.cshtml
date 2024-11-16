@@ -1,0 +1,41 @@
+﻿@using MyLaptopWebsite.Utils
+@model IEnumerable<MyLaptopWebsite.Models.HoaDon>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-success">Danh sách đơn hàng</h1>
+
+<div class="mt-2 mb-3">
+    <p class="fw-bold fs-5"><i class="fa fa-filter" aria-hidden="true"></i> Lọc theo tình trạng đơn hàng</p>
+    <select class="w-25 form-control" onchange="getFilteredOrder(this)">
+        <option value='-1'>Tất cả</option>
+        @foreach(var type in OrderState.getStates())
+        {
+            if (type.Key == ViewBag.OrderType)
+            {
+                <option value="@type.Key" selected>@type.Value</option>
+            }
+            else
+            {
+                <option value="@type.Key">@type.Value</option>
+            }
+        }
+    </select>
+</div>
+
+<partial name="_pvOrderTable" model="Model" />
+
+<script>
+    function getFilteredOrder(select) {
+        const xhttp = new XMLHttpRequest();
+
+        xhttp.onload = function () {
+            document.querySelector('#renderOrder').innerHTML = this.responseText;
+        }
+
+        xhttp.open("GET", `/Admin/Order/FilterOrder?orderType=${select.value}`);
+        xhttp.send();
+    }
+</script>

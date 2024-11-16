@@ -1,0 +1,63 @@
+﻿@model IEnumerable<MyLaptopWebsite.Models.DipGiamGia>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Quản lý dịp giảm giá</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Thêm dịp giảm giá</a>
+</p>
+
+@if(Model == null || Model.Count() == 0)
+{
+    <h3 class="text-danger fw-bold"> Chưa có dịp giảm giá nào </h3>
+}
+else
+{
+    <table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaDipGiamGia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TenDipGiamGia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayBatDau)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayHetHan)
+            </th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaDipGiamGia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenDipGiamGia)
+            </td>
+            <td>
+                @item.NgayBatDau.ToString("dd/MM/yyyy hh:mm:ss")
+            </td>
+            <td class="@(item.NgayHetHan < DateTime.Now ? "text-danger fw-bold" : "")">
+                @item.NgayHetHan.ToString("dd/MM/yyyy hh:mm:ss")
+            </td>
+            <td>
+                <a asp-action="Update" asp-route-id="@item.MaDipGiamGia" class="btn btn-primary">Chỉnh sửa</a>
+                <a asp-action="DeleteConfirm" asp-route-id="@item.MaDipGiamGia" class="btn btn-danger">Xoá</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+}
+
+
+

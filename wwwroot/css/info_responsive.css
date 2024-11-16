@@ -1,0 +1,41 @@
+﻿@media (max-width: 1099px) {
+    .body {
+        width: 100%;
+    }
+
+    .tabs {
+        font-size: 1rem;
+    }
+
+    .info-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .info-right {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 680px) {
+    .body {
+        flex-direction: column;
+    }
+
+    .info-left,
+    .info-right {
+        width: 100%;
+    }
+
+    .info-header h2 {
+        font-size: 1rem;
+    }
+
+    .info-right {
+        font-size: 0.9rem;
+    }
+
+    .tabs {
+        flex-direction: row;
+        justify-content: center;
+    }
+}

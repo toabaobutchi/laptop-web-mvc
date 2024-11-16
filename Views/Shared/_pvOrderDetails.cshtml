@@ -1,0 +1,24 @@
+﻿@model HoaDon
+
+@if(Model != null)
+{
+    foreach(var detail in Model.ChiTietHoaDons)
+    {
+        <div class="order-detail-row">
+            <div class="order-detail-image">
+                <img src="~/images/@detail.MaSpNavigation.HinhAnhSanPhams.First().HinhAnh" />
+            </div>
+            <div class="order-detail-info">
+                <a asp-action="ProductDetail" asp-controller="Shop" asp-area="" asp-route-pid="@detail.MaSp"><strong>Tên sản phẩm:</strong> @detail.MaSpNavigation.TenSp </a>
+                <p><strong>Giá bán:</strong> @detail.GiaBan VND </p>
+                <p><strong>Số lượng:</strong> @detail.SoLuong</p>
+                <p><strong>Thành tiền:</strong> @(detail.SoLuong * detail.GiaBan)</p>
+            </div>
+            
+        </div>
+    }
+}
+else
+{
+    <p>Hoá đơn không tồn tại</p>
+}

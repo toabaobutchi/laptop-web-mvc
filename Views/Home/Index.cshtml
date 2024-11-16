@@ -1,0 +1,102 @@
+﻿@using MyLaptopWebsite.Utils
+@model IEnumerable<IGrouping<DipGiamGia, SanPham>>
+
+@section Style {
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/style_responsive.css">
+}
+
+@{
+    IEnumerable<NhaSanXuat> brands = ViewBag.Brands;
+    ViewBag.Title = "Trang chủ";
+}
+
+<div class="center">
+    <div class="center-left">
+        <p><span id="typed-animation-text"></span></p>
+        <p class="desc">
+            Bạn là sinh viên hay nhân viên văn phòng ? Bạn đang cần một chiếc laptop ? Hãy đến với chúng tôi, Laptop World!
+        </p>
+        <div class="btn-go-to-shop">
+            <a asp-action="Index" asp-controller="Shop" asp-area="">Mua hàng ngay</a>
+        </div>
+    </div>
+
+    <!-- Start center right -->
+    <div class="center-right">
+        <img src="images/thumbnail.png" alt="thumbnail">
+    </div>
+    <!-- End center right -->
+</div>
+<!-- End center -->
+
+<!-- Start body -->
+<div class="body">
+
+    <!-- Start brands -->
+    <div class="brands">
+        @foreach(var brand in brands)
+        {
+            <a href="/Shop/Search?brand=@brand.MaNsx" class="brand-item">
+                <img src="~/images/@brand.Logo" alt="@brand.TenNsx logo">
+            </a>
+        }
+    </div>
+    <!-- End brands -->
+
+    @foreach(var group in Model)
+    {
+        if(group.Key != null && group.Key.NgayHetHan >= DateTime.Now)
+        {
+            <!-- Start promotions -->
+        <div class="area promotions">
+            <!-- Start area title -->
+            <div class="area-title">
+                <div class="area-title-text">
+                    <p>@group.Key.TenDipGiamGia</p>
+                    <script>
+                        setInterval(() => {
+                            countDown('@group.Key.NgayHetHan.ToString()', '#days@(group.Key.MaDipGiamGia)', '#minutes@(group.Key.MaDipGiamGia)', '#hours@(group.Key.MaDipGiamGia)', '#seconds@(group.Key.MaDipGiamGia)');
+                        }, 1000);
+                    </script>
+                    <p>
+                        <span id="days@(group.Key.MaDipGiamGia)"></span>
+                        <span id="hours@(group.Key.MaDipGiamGia)"></span>
+                        <span id="minutes@(group.Key.MaDipGiamGia)"></span>
+                        <span id="seconds@(group.Key.MaDipGiamGia)"></span>
+                    </p>
+                </div>
+                <div class="more-btn">
+                    <a asp-action="Search" asp-controller="Shop" asp-route-sortBy="@Filter.PROMOTION"> Xem thêm sản phẩm giảm giá <i class="fa fa-plus-square-o" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <!-- End area title -->
+            <!-- Start area body -->
+            <div class="area-body">
+                @foreach(var product in group)
+                {
+                    <partial name="_pvProductCard" model="product" />
+                }
+            </div>
+            <!-- End area body -->
+        </div>
+        <!-- End promotions -->
+        }
+        
+    }
+</div>
+<!-- End body -->
+@section Script {
+    <script>
+        // toStickyNavigation();
+        const typed = new Typed('#typed-animation-text', {
+            strings: ['Bạn đang cần mua laptop ?', 'Hãy đến với Laptop World!', 'Nơi có mọi thứ bạn cần !'],
+            typeSpeed: 50,
+            backSpeed: 50,
+            backDelay: 1000,
+            startDelay: 1000,
+            loop: true,
+            showCursor: true,
+        });
+    </script>
+}

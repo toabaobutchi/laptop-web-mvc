@@ -1,0 +1,166 @@
+﻿@section Style {
+    <link rel="stylesheet" href="~/css/cart.css">
+    <link rel="stylesheet" href="~/css/cart_responsive.css">
+}
+@using MyLaptopWebsite.Utils;
+@{
+    List<CartDetail> cart = Context.Session.Get<List<CartDetail>>("cart");
+    NguoiDung user = Context.Session.Get<NguoiDung>("user");
+    ViewBag.Title = "Giỏ hàng";
+}
+
+<div class="body">
+    <div class="cart">
+        <div class="cart-header">
+            <a asp-action="Index" asp-controller="Shop" asp-area="" id="back-to-shop-btn"><ion-icon name="caret-back-outline"></ion-icon> Xem thêm các sản phẩm khác</a>
+            <h3><ion-icon name="cart-outline"></ion-icon> Giỏ hàng của bạn (<span id="current-cart-quantity">@(cart != null ? cart.Count() : 0)</span> sản phẩm)</h3>
+        </div>
+        @if(cart != null && cart.Count() != 0)
+        {
+            <div class="cart-body">
+            @foreach(var c in cart)
+            {
+                <!-- Start cart - product card -->
+                <div class="cart-product-card">
+                    <img src="~/images/@c.Image" />
+                    <div class="cart-product-card-info">
+                        <div class="cart-product-card-info-row">
+                            <a class="product-name" asp-action="ProductDetail" asp-controller="Shop" asp-area="" asp-route-pid="@c.ProductId">
+                                @c.ProductName 
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                            </a>
+                            <button onclick="deleteProductCard(this, @c.ProductId)"><ion-icon name="trash-outline"></ion-icon></button>
+                        </div>
+                        <div class="cart-product-card-info-row">
+                            <p class="product-price" id="price@(c.ProductId)">@(Formater.ToCurrency(c.Price * c.Quantity)) VND</p>
+                            <div class="product-quantity">
+                                <button onclick="changeQuantity(@(c.ProductId), @c.Price, -1)">&minus;</button> 
+                                <span id="q@(c.ProductId)">@c.Quantity</span>
+                                <button onclick="changeQuantity(@(c.ProductId), @c.Price, 1, @c.Stock)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End cart - product card -->
+            }
+                <p class="total-price">Tổng tiền: <span id="total-price">@Formater.ToCurrency(cart.Sum(c => c.Price * c.Quantity))</span> VND</p>
+
+                <div id="purchase-btn">
+
+                    @if (user == null) // chưa đăng nhập
+                    {
+                        <a onclick="toggleModal('#user-form-modal')" style="color: #fff; font-weight: 600; padding: 5px 10px; cursor: pointer;background-color: var(--p-color);">
+                            <ion-icon name="log-in"></ion-icon> <span>Đăng nhập</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="order-btn" onclick="toggleModal('#purchase-form-modal')"><ion-icon name="cart-outline"></ion-icon> Mua hàng</button>
+                        <div class="modal" id="purchase-form-modal">
+                            <div class="modal-overlay"></div>
+                            <div class="modal-content" style="height: max-content;">
+                                <div class="modal-content-header">
+                                    <h3>Địa chỉ nhận hàng</h3>
+                                    <span class="close-modal-btn"><ion-icon name="close-outline"></ion-icon></span>
+                                </div>
+                                <div class="modal-content-body">
+                                    <form asp-action="Order" asp-controller="Cart" asp-area="" method="post">
+                                        <div class="form-input">
+                                            <textarea name="address" placeholder="Hãy nhập địa chỉ nhận hàng của bạn">@CartHelper.getAddress(user)</textarea>
+                                        </div>
+                                        <div class="form-input">
+                                            <button><ion-icon name="wallet-outline"></ion-icon> Mua hàng </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <img src="~/images/empty-cart.svg" alt="empty-cart-image" id="empty-cart-img" />
+        }
+    </div>
+</div>
+
+@section Script {
+    @if(ViewBag.Message != null)
+    {
+        <script>
+            showToast({
+                title: "Lỗi",
+                content: "@ViewBag.Message",
+                type: "error"
+            });
+        </script>
+    }
+    <script>
+        function changeQuantity(pid, original_price, count = 1, max = -1) {
+            var valueContainer = document.querySelector(`#q${pid}`);
+            var value = parseInt(valueContainer.innerText);
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                var res = JSON.parse(this.responseText);
+                valueContainer.innerText = res.quantity;
+                document.querySelector(`#price${pid}`).innerText = parseInt(res.quantity) * original_price;
+                document.querySelector('#total-price').innerText = res.totalPrice;
+            }
+
+            xhttp.open("GET", `/Cart/ChangeQuantity?pid=${pid}&quantity=${value+count}`);
+            xhttp.send();
+            
+            if (value + count >= 1) {
+                if (max == -1 || (value + count < max)) {
+                    // console.log(value + count);
+                    valueContainer.innerText = value + count;
+                    document.querySelector(`#price${pid}`).innerText = (value + count) * original_price;
+                }
+            }
+        }
+        function deleteProductCard(btn, pid) {
+
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                var res = JSON.parse(this.responseText);
+                if (res.isRemoved == true) { // đã xoá được ở máy chủ
+
+                    showToast({
+                        title: "Xoá sản phẩm",
+                        content: "Xoá sản phẩm thành công",
+                        type: "success"
+                    });
+
+                    var card = btn.parentNode.parentNode.parentNode;
+                    document.querySelector('#total-price').innerText = res.totalPrice;
+                    card.remove();
+                    if (!document.querySelectorAll('.cart-product-card').length) {
+                        document.querySelector('.cart-body').innerHTML = '<img src="/images/empty-cart.svg" alt="empty-cart-image" id="empty-cart-img" />';
+                    }
+
+                    // cập nhật số lượng sản phẩm trên tiêu đề
+                    var currentQuantityContainer = document.querySelector('#current-cart-quantity');
+                    var count = parseInt(currentQuantityContainer.innerHTML);
+                    currentQuantityContainer.innerHTML = count - 1;
+
+                    // cập nhật số lượng sản phẩm trên badge
+                    var badge = document.querySelector('.badge');
+                    var badgeValue = parseInt(badge.innerHTML);
+                    badge.innerHTML = badgeValue - 1;
+                    if (badgeValue - 1 <= 0) {
+                        badge.style.padding = '0px';
+                        badge.innerHTML = '';
+                    }
+                }
+            }
+
+            // Send a request
+            xhttp.open("GET", `/Cart/DeleteProductFromCart?pid=${pid}`);
+            xhttp.send();
+        }
+    </script>
+}

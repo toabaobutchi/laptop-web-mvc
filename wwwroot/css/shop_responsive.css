@@ -1,0 +1,11 @@
+﻿@media (max-width: 1099px) {
+    .body {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 660px) {
+    .product-filter-input-title {
+        flex: 100%;
+    }
+}

@@ -1,0 +1,62 @@
+﻿@model MyLaptopWebsite.Models.SanPham
+<style>
+    #images img {
+        max-width: 200px;
+        margin: 5px;
+    }
+</style>
+<div>
+    <h2 class="text-danger"><i class="fa fa-trash-o" aria-hidden="true"></i> Thông tin sản phẩm</h2>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.MaSp)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.MaSp)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.TenSp)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.TenSp)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.DonGia)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.DonGia)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.BaiViet)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.BaiViet)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.TonKho)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.TonKho)
+        </dd>
+    </dl>
+    <p class="fw-bold mb-2">Hình ảnh</p>
+    <div id="images" class="d-flex align-items-center flex-wrap">
+        @foreach(var img in Model.HinhAnhSanPhams.Select(i => i.HinhAnh))
+        {
+            <img src="~/images/@img" class="img-thumbnail" />
+        }
+    </div>
+    @if ((int)ViewBag.ChiTietHoaDon != 0)
+    {
+        <p class="text-danger fw-bold">Không thể xoá sản phẩm này vì đang được sử dụng cho @ViewBag.ChiTietHoaDon đơn hàng</p>
+    }
+    else
+    {
+        <form asp-action="DeleteProduct" method="post" class="mt-3">
+            <input type="hidden" name="pid" value="@Model.MaSp" />
+            <input type="submit" value="Xoá sản phẩm" class="btn btn-danger" />
+        </form>
+    }
+    
+</div>

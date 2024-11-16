@@ -1,0 +1,66 @@
+﻿@model MyLaptopWebsite.Models.SanPham
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<style>
+    #renderChosenImages img {
+        max-width: 100px;
+    }
+</style>
+
+<h1 class="text-success"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Thêm sản phẩm</h1>
+
+<hr />
+<div class="row">
+    <div class="col-6">
+        <form asp-action="Create" asp-area="Admin" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <p class="text-primary fw-bold"><i class="fa fa-pencil" aria-hidden="true"></i> Mã sản phẩm sẽ được tự động tạo ra!</p>
+            <div class="form-group mb-3">
+                <label asp-for="TenSp" class="control-label fw-bold"></label>
+                <input asp-for="TenSp" class="form-control" />
+                <span asp-validation-for="TenSp" class="text-danger"></span>
+            </div>
+            <div class="row mb-3">
+                <div class="form-group col-6">
+                    <label asp-for="DonGia" class="control-label fw-bold"></label>
+                    <input asp-for="DonGia" class="form-control" />
+                    <span asp-validation-for="DonGia" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="TonKho" class="control-label fw-bold"></label>
+                    <input asp-for="TonKho" class="form-control" />
+                    <span asp-validation-for="TonKho" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label fw-bold btn btn-outline-primary" for="product-images"><i class="fa fa-picture-o" aria-hidden="true"></i> Chọn ảnh cho sản phẩm </label>
+                <input type="file" name="images" id="product-images" class="visually-hidden form-control" accept="image/*" multiple onchange="displayImages(this, '#renderChosenImages')" />
+            </div>
+            <div id="renderChosenImages"></div>
+            <div class="form-group mb-3">
+                <label asp-for="BaiViet" class="control-label fw-bold"></label>
+                <textarea asp-for="BaiViet" class="form-control"></textarea>
+                <span asp-validation-for="BaiViet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaNsx" class="control-label fw-bold">Nhà sản xuất</label>
+                <select asp-for="MaNsx" asp-items="ViewBag.Mansx" class="form-control"></select>
+                <span asp-validation-for="MaNsx" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Thêm sản phẩm" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-info"> <i class="fa fa-reply-all" aria-hidden="true"></i> Trở lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/renderImage.js"></script>
+}

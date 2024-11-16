@@ -1,0 +1,65 @@
+﻿@model ThongSoKyThuat
+
+@if(Model != null)
+{
+    <!-- Start specification -->
+<div class="specifications">
+    <h2 class="specifications-title">Thông số kỹ thuật</h2>
+    <div class="specifications-content">
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.CardDoHoa)</span><span>@Model.CardDoHoa</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.Cpu)</span><span>@Model.Cpu</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.Ram)</span><span>@Model.Ram GB</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.LoaiRam)</span><span>@Model.LoaiRam</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.Ocung)</span><span>@Model.Ocung</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.ManHinhCamUng)</span><span>@(Model.ManHinhCamUng == null || Model.ManHinhCamUng == false ? "Không" : "Có")</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.TanSoQuet)</span><span>@Model.TanSoQuet (Hz)</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.KichThuocManHinh)</span><span>@Model.KichThuocManHinh</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.CongNgheManHinh)</span><span>@Model.CongNgheManHinh</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.DoPhanGiai)</span><span>@Model.DoPhanGiai</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.WebCam)</span><span>@Model.WebCam</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.Bluetooth)</span><span>@Model.Bluetooth</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.KichThuocXungQuanh)</span><span>@Model.KichThuocXungQuanh (cm)</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.TrongLuong)</span><span>@Model.TrongLuong (kg)</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.Pin)</span><span>@Model.Pin</span>
+        </p>
+        <p class="specifications-content-row">
+            <span>@Html.DisplayNameFor(m => m.CongKetNoi)</span><span>@Model.CongKetNoi</span>
+        </p>
+    </div>
+</div>
+    <!-- End specification -->
+}
+else
+{
+    <p style="color: orangered; font-weight: 600;">Không có thông số kỹ thuật cho sản phẩm này!</p>
+}
+

@@ -1,0 +1,66 @@
+﻿@using MyLaptopWebsite.Areas.Admin.Models;
+@model IEnumerable<MyLaptopWebsite.Models.NhaSanXuat>
+
+@{
+    ViewData["Title"] = "Quản lý nhà sản xuất";
+}
+
+<style>
+    .logo img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
+<h1 class="border-bottom mb-4">Quản lý nhà sản xuất</h1>
+
+<p>
+    <a asp-action="Create" asp-controller="NhaSanXuat" asp-area="Admin" class="btn btn-success"> <i class="fa fa-plus-square-o" aria-hidden="true"></i> Thêm nhà sản xuất mới</a>
+</p>
+
+@if (Model == null || Model.Count() == 0)
+{
+    <h3 class="text-danger fw-bold"> Chưa có nhà sản xuất nào </h3>
+}
+else
+{
+    <table class="table table-bordered w-auto">
+    <thead class="bg-light">
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(model => model.MaNsx)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TenNsx)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Logo)
+            </th>
+            <th> Thao tác </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaNsx)
+            </td>
+            <td class="fw-bold">
+                @Html.DisplayFor(modelItem => item.TenNsx)
+            </td>
+            <td class="logo">
+                <img src="~/images/@item.Logo" />
+            </td>
+            <td>
+                <a asp-action="Update" asp-controller="NhaSanXuat" asp-route-id="@item.MaNsx" asp-area="Admin" class="btn btn-primary">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Chỉnh sửa
+                </a>
+                <a asp-action="DeleteConfirm" asp-route-id="@item.MaNsx" asp-controller="NhaSanXuat" asp-area="Admin" class="btn btn-danger">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i> Xoá
+                </a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+}

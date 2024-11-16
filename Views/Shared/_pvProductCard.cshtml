@@ -1,0 +1,39 @@
+﻿@model SanPham
+@using MyLaptopWebsite.Utils
+@{
+    var cart = Context.Session.Get<List<CartDetail>>("cart");
+}
+<!-- Start product card -->
+<div class="product-card pos-r">
+    @if (Model.ThongTinGiamGia != null && Model.ThongTinGiamGia.MucGiamGia != 0)
+    {
+        <div class="pos-a promotions-tag">
+            <p>Giảm @Model.ThongTinGiamGia.MucGiamGia%</p>
+        </div>
+    }
+    <a asp-action="ProductDetail" asp-controller="Shop" asp-area="" asp-route-pid="@Model.MaSp">
+        <img src="~/images/@Model.HinhAnhSanPhams.First().HinhAnh" alt="product image">
+    </a>
+
+    <div class="product-card-body">
+        <div class="product-card-title">
+            <a asp-action="ProductDetail" asp-controller="Shop" asp-area="" asp-route-pid="@Model.MaSp">@Model.TenSp</a>
+        </div>
+        <div class="product-card-price">
+            @if (Model.ThongTinGiamGia != null && Model.ThongTinGiamGia.MucGiamGia != 0)
+            {
+                <span class="product-card-old-price">@Formater.ToCurrency(Model.DonGia)</span>
+                <span class="product-card-new-price">@Formater.ToCurrency(Model.DonGia * (decimal)(1 - (Model.ThongTinGiamGia?.MucGiamGia / 100.0) ?? 0))</span>
+            }
+            else
+            {
+                <span class="product-card-new-price">@Formater.ToCurrency(Model.DonGia)</span>
+            }
+        </div>
+        @{
+            ViewBag.MaSp = Model.MaSp;
+        }
+        <partial name="_pvAddToCartButton" model="(cart != null && cart.FirstOrDefault(c => c.ProductId == Model.MaSp) != null)">
+    </div>
+</div>
+<!-- End product card -->

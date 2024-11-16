@@ -1,0 +1,137 @@
+﻿@model MyLaptopWebsite.Models.ThongSoKyThuat
+
+<h3 class="text-primary"><i class="fa fa-file-text-o" aria-hidden="true"></i> Thông số kỹ thuật</h3>
+<hr />
+@if(Model == null)
+{
+    <h5 class="text-warning mb-3"> Sản phẩm chưa có thông số kỹ thuật</h5>
+}
+
+<form asp-action="SaveSpectification" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" name="MaSP" value="@ViewBag.ProductId" />
+    @if (Model != null)
+    {
+        <div class="form-group">
+            <label asp-for="MaThongSo" class="control-label fw-bold"></label>
+            <input asp-for="MaThongSo" class="form-control form-control-sm" readonly />
+            <span asp-validation-for="MaThongSo" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <p class="text-primary"> Mã thông số kỹ thuật sẽ được tạo tự động </p>
+    }
+    <div class="form-group mb-3">
+        <label asp-for="CardDoHoa" class="control-label fw-bold"></label>
+        <input asp-for="CardDoHoa" class="form-control form-control-sm" />
+        <span asp-validation-for="CardDoHoa" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Cpu" class="control-label fw-bold"></label>
+        <input asp-for="Cpu" class="form-control form-control-sm" />
+        <span asp-validation-for="Cpu" class="text-danger"></span>
+    </div>
+    <div class="row mb-3">
+        <div class="form-group col-6">
+            <label asp-for="Ram" class="control-label fw-bold"></label>
+            <div class="input-group input-group-sm">
+                <input asp-for="Ram" class="form-control" value="8" />
+                <span class="input-group-text in" id="basic-addon2">GB</span>
+            </div>
+            <span asp-validation-for="Ram" class="text-danger"></span>
+        </div>
+        <div class="form-group col-6">
+            <label asp-for="LoaiRam" class="control-label fw-bold"></label>
+            <input asp-for="LoaiRam" class="form-control form-control-sm" />
+            <span asp-validation-for="LoaiRam" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Ocung" class="control-label fw-bold"></label>
+        <input asp-for="Ocung" class="form-control form-control-sm" />
+        <span asp-validation-for="Ocung" class="text-danger"></span>
+    </div>
+    <div class="form-check form-switch mb-3 mt-3">
+        <label asp-for="ManHinhCamUng" class="fw-bold form-check-label"></label>
+        <input name="ManHinhCamUng" id="ManHinhCamUng" type="checkbox" value="True" class="form-check-input" />
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="TanSoQuet" class="control-label fw-bold"></label>
+        <div class="input-group input-group-sm">
+            <input asp-for="TanSoQuet" class="form-control" placeholder="144" />
+            <span class="input-group-text in" id="basic-addon2">Hz</span>
+        </div>
+        <span asp-validation-for="TanSoQuet" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="KichThuocManHinh" class="control-label fw-bold"></label>
+        <div class="input-group input-group-sm">
+            <input asp-for="KichThuocManHinh" class="form-control" placeholder="15.6" />
+            <span class="input-group-text in" id="basic-addon2">inches</span>
+        </div>
+        <span asp-validation-for="KichThuocManHinh" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="DoPhanGiai" class="control-label fw-bold"></label>
+        <div class="input-group input-group-sm">
+            <input asp-for="DoPhanGiai" class="form-control" placeholder="1920x1080" />
+            <span class="input-group-text in" id="basic-addon2">pixels</span>
+        </div>
+        <span asp-validation-for="DoPhanGiai" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="CongNgheManHinh" class="control-label fw-bold"></label>
+        <input asp-for="CongNgheManHinh" class="form-control form-control-sm" />
+        <span asp-validation-for="CongNgheManHinh" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="CongKetNoi" class="control-label fw-bold"></label>
+        <input asp-for="CongKetNoi" class="form-control form-control-sm" />
+        <span asp-validation-for="CongKetNoi" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="WebCam" class="control-label fw-bold"></label>
+        <input asp-for="WebCam" class="form-control form-control-sm" />
+        <span asp-validation-for="WebCam" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Bluetooth" class="control-label fw-bold"></label>
+        <input asp-for="Bluetooth" class="form-control form-control-sm" />
+        <span asp-validation-for="Bluetooth" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="KichThuocXungQuanh" class="control-label fw-bold"></label>
+        <div class="input-group input-group-sm">
+            <input asp-for="KichThuocXungQuanh" class="form-control" placeholder="35.9 x 25.6 x 2.28" />
+            <span class="input-group-text in" id="basic-addon2">cm (W x H x D)</span>
+        </div>
+        <span asp-validation-for="KichThuocXungQuanh" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="TrongLuong" class="control-label fw-bold"></label>
+        <div class="input-group input-group-sm">
+            <input asp-for="TrongLuong" class="form-control" placeholder="1.29" />
+            <span class="input-group-text in" id="basic-addon2">kg</span>
+        </div>
+        <span asp-validation-for="TrongLuong" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="AmThanh" class="control-label fw-bold"></label>
+        <input asp-for="AmThanh" class="form-control form-control-sm" />
+        <span asp-validation-for="AmThanh" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Pin" class="control-label fw-bold"></label>
+        <input asp-for="Pin" class="form-control form-control-sm" />
+        <span asp-validation-for="Pin" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="HeDieuHanh" class="control-label fw-bold"></label>
+        <input asp-for="HeDieuHanh" class="form-control form-control-sm" placeholder="Windows 11 Home" />
+        <span asp-validation-for="HeDieuHanh" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <input type="submit" value="Lưu" class="btn btn-primary" />
+    </div>
+</form>

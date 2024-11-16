@@ -1,0 +1,89 @@
+﻿@model IEnumerable<MyLaptopWebsite.Models.BinhLuan>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-success">Bình luận của khách hàng</h1>
+
+<hr />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.NoiDung)
+                </th>
+                <th>
+                    Tên sản phẩm
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>Trạng thái</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NoiDung)
+                    </td>
+                    <td>
+                        @item.MaSanPhamNavigation.TenSp
+                    </td>
+                    <td>
+                        @item.MaNguoiDungNavigation.Email
+                    </td>
+                    <td>
+                        @if(item.InverseMaBinhLuanPhuThuocNavigation.Count() <= 0 || !item.InverseMaBinhLuanPhuThuocNavigation.Any(r => r.MaNguoiDungNavigation.IsAdmin == true))
+                        {
+                            <p class="text-danger fw-bold">Chưa phản hồi từ quản trị viên</p>
+                        }
+                        else
+                        {
+                            <p>Đã phản hồi</p>
+                        }
+                    </td>
+                    <td>
+                    <button class="btn btn-default" onclick="renderContent(@item.MaBinhLuan, 'replies')" style="cursor: pointer;">
+                            <i class="fa fa-comments-o" aria-hidden="true"></i> Trả lời
+                        </button>
+                        @* <div class="dropdown dropend">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fa fa-comments-o" aria-hidden="true"></i> Tương tác
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" onclick="renderContent(@item.MaBinhLuan, 'replies')" style="cursor: pointer;">Xem các trả lời</a></li>
+                                <li><a class="dropdown-item" href="#">Trả lời</a></li>
+                            </ul>
+                        </div> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div id="renderContent">
+    </div>
+
+@section Scripts {
+    <script>
+        function renderContent(commentId, contentType) {
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                document.querySelector('#renderContent').innerHTML = this.responseText;
+            }
+
+            var url = `/Admin/BinhLuan/RenderContent?commentId=${commentId}&contentType=${contentType}`;
+
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+        function generateReplyBox() {
+            
+        }
+    </script>
+}

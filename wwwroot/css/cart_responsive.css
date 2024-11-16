@@ -1,0 +1,25 @@
+﻿@media (max-width: 1099px) {
+    .body {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    html {
+        font-size: 14px;
+    }
+
+    .cart-header h3 {
+        margin-bottom: 0;
+    }
+
+    .cart-product-card {
+        width: 90%;
+    }
+}
+
+@media (max-width: 400px) {
+    .cart-product-card {
+        width: 100%;
+    }
+}

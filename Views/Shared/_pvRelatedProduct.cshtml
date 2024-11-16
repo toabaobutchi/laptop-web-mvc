@@ -1,0 +1,27 @@
+﻿@model IEnumerable<SanPham>
+
+<div class="product-info-item show area related-products">
+    <!-- Start area body -->
+    <div class="area-body">
+        @{
+            if (Model != null && Model.Count() != 0)
+            {
+                foreach (var sp in Model)
+                {
+                    if (sp.MaSp == ViewBag.MaSp) continue;
+                    <partial name="_pvProductCard" model="sp" />
+                }
+            }
+            else
+            {
+                <p style="color: orangered;"> Không có sản phẩm tương tự </p>
+            }
+        }
+
+    </div>
+    <!-- End area body -->
+    <div class="more-btn">
+        <button>Xem thêm <ion-icon name="bag-add-outline"></ion-icon></button>
+    </div>
+    <!-- End shop -->
+</div>

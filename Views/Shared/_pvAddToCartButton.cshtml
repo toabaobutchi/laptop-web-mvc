@@ -1,0 +1,7 @@
+﻿@model bool
+
+<div class="product-card-cart-btn @(Model ? "addedToCart" : "")">
+    <button onclick="AddToCart(@ViewBag.MaSp, this, @ViewBag.InputQuantity)">
+        <ion-icon name="cart-outline"></ion-icon> Thêm vào giỏ hàng
+    </button>
+</div>

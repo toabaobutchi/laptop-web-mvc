@@ -1,0 +1,48 @@
+﻿@using MyLaptopWebsite.Utils
+@{
+    var user = Context.Session.Get<NguoiDung>("user");
+}
+
+<div class="content-item">
+    <form asp-action="Update" asp-controller="User" asp-area="" method="post">
+        <div class="form-group">
+            <label for="TenNguoiDung"><ion-icon name="id-card-outline"></ion-icon> Tên người dùng</label>
+            <input type="text" name="TenNguoiDung" id="TenNguoiDung" value="@(user?.TenNguoiDung)" />
+        </div>
+        <div class="form-group">
+            <label for="Email"><ion-icon name="mail-outline"></ion-icon> Email </label>
+            <input type="text" name="Email" id="Email" readonly value="@(user?.Email)">
+        </div>
+        <div class="form-group">
+            <label for="SoDienThoai"><ion-icon name="call-outline"></ion-icon> Số điện thoại</label>
+            <input type="text" name="SoDienThoai" id="SoDienThoai" value="@(user?.SoDienThoai)" placeholder="Chưa có">
+        </div>
+        <div class="form-group form-group-row">
+            <div class="input-group-item">
+                <label for="SoNha"><ion-icon name="home-outline"></ion-icon> Số nhà</label>
+                <input type="text" name="SoNha" id="SoNha" value="@(user?.SoNha)" placeholder="Chưa có">
+            </div>
+            <div class="input-group-item">
+                <label for="Duong"> <ion-icon name="location-outline"></ion-icon> Đường</label>
+                <input type="text" name="Duong" id="Duong" value="@(user?.Duong)" placeholder="Chưa có">
+            </div>
+        </div>
+        <div class="form-group form-group-row">
+            <div class="input-group-item">
+                <label for="Phuong"> <ion-icon name="golf-outline"></ion-icon> Phường</label>
+                <input type="text" name="Phuong" id="Phuong" value="@(user?.Phuong)" placeholder="Chưa có">
+            </div>
+            <div class="input-group-item">
+                <label for="Quan"><ion-icon name="disc-outline"></ion-icon> Quận</label>
+                <input type="text" name="Quan" id="Quan" value="@(user?.Quan)" placeholder="Chưa có">
+            </div>
+            <div class="input-group-item">
+                <label for="ThanhPho"><ion-icon name="business-outline"></ion-icon> Thành phố</label>
+                <input type="text" name="ThanhPho" id="ThanhPho" value="@(user?.ThanhPho)" placeholder="Chưa có">
+            </div>
+        </div>
+        <div class="form-group">
+            <button><ion-icon name="create-outline"></ion-icon> Cập nhật thông tin </button>
+        </div>
+    </form>
+</div>

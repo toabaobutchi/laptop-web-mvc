@@ -1,0 +1,39 @@
+﻿@using MyLaptopWebsite.Utils
+@model IEnumerable<HoaDon>
+
+@if(Model == null || Model.Count() <= 0)
+{
+    <p style="color: red; font-weight:600; font-size: 1rem; text-align: center;">Bạn chưa đặt đơn hàng nào!</p>
+}
+else
+{
+    foreach(var order in Model.OrderByDescending(m => m.NgayLap))
+    {
+        <div class="order">
+            <div class="order-row">
+                <p>Đơn hàng <strong>@order.NgayLap.ToString("dd-MM-yyyy HH:mm tt")</strong></p>
+                <p>Thành tiền: @Formater.ToCurrency(order.ThanhTien) VND</p>
+            </div>
+            <div class="order-row">
+                <p>Trạng thái: @(OrderState.getStateLabel(order.TinhTrang ?? 0)) </p>
+                <p>Ngày giao hàng: @(order.NgayGiaoHang.HasValue ? order.NgayGiaoHang.Value : "Chưa xác định")</p>
+            </div>
+            <div class="order-row">
+                <span>Địa chỉ: @order.DiaChi</span>
+                <button onclick="getOrderDetails(@order.MaDonHang, '#order-detail-modal', '.modal-content-body')"><ion-icon name="information-circle-outline"></ion-icon> Xem chi tiết</button>
+            </div>
+        </div>
+    }
+    <div class="modal" id="order-detail-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-content-header">
+                <h4>Chi tiết đơn hàng</h4>
+                <span class="close-modal-btn"><ion-icon name="close-outline"></ion-icon></span>
+            </div>
+            <div class="modal-content-body">
+                @* Ajax render *@
+            </div>
+        </div>
+    </div>
+}

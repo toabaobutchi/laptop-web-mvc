@@ -1,0 +1,75 @@
+﻿@model IEnumerable<MyLaptopWebsite.Models.NguoiDung>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-warning">Danh sách người dùng trong hệ thống</h1>
+
+<p class="mt-4">
+    <a asp-action="Create" asp-controller="NguoiDung" asp-area="Admin" class="btn btn-success"><i class="fa fa-user-plus" aria-hidden="true"></i> Tạo mới quản trị viên</a>
+</p>
+<table class="table w-auto">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TenNguoiDung)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsAdmin)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenNguoiDung)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td id="permission">
+                    @if(item.IsAdmin)
+                    {
+                        <p class='text-danger fw-bold'> Quản trị viên </p>
+                    }
+                    else
+                    {
+                        <span>Người dùng</span>
+                    }
+                </td>
+            <td>
+                @if(!item.IsAdmin)
+                {
+                    <button onclick="grantPermission(@item.MaNguoiDung, this)" class="btn btn-danger">
+                        <i class="fa fa-level-up" aria-hidden="true"></i> Cấp quyền
+                    </button>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function grantPermission(uid, button)
+        {
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                if (this.responseText.length != 0) {
+                    document.querySelector('#permission').innerHTML = this.responseText;
+                    button.remove();
+                }
+            }
+            xhttp.open("GET", `/Admin/NguoiDung/GrantPermission?uid=${uid}`);
+            xhttp.send();
+        }
+    </script>
+}

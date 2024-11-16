@@ -1,0 +1,109 @@
+﻿@using MyLaptopWebsite.Utils
+@{
+    ViewData["Title"] = "Thông tin người dùng";
+    var user = Context.Session.Get<NguoiDung>("user");
+}
+
+@section Style {
+    <link rel="stylesheet" href="~/css/info.css">
+    <link rel="stylesheet" href="~/css/info_responsive.css">
+    <style>
+        
+    </style>
+}
+
+@if(user != null)
+{
+    <!-- Start body -->
+<div class="body">
+    <!-- Start # info side left -->
+    <section class="info-left">
+        <div class="info-header border-bottom">
+            <img src="/images/profile.png" alt="profile">
+            <h2>@(user?.TenNguoiDung ?? "[Chưa có tên]")</h2>
+        </div>
+        <!-- Start # Tabs -->
+        <div class="tabs">
+            <div class="tab-item chosen" onclick="getUserContent('info', this)">
+                <ion-icon name="receipt-outline"></ion-icon> Thông tin cá nhân
+            </div>
+            <div class="tab-item" onclick="getUserContent('orders', this)">
+                <ion-icon name="bookmarks-outline"></ion-icon> Đơn hàng
+            </div>
+            <div class="tab-item">
+                <a asp-action="Logout" asp-controller="User" asp-area="" style="text-decoration: none; color: inherit;"><ion-icon name="log-out-outline"></ion-icon> Đăng xuất</a>
+            </div>
+        </div>
+        <!-- End # Tabs -->
+    </section>
+    <!-- End # info side left -->
+    <!-- Start # info side right -->
+    <section class="info-right">
+        <div class="contents">
+            <partial name="_pvProfile" />
+        </div>
+    </section>
+    <!-- End # info side right -->
+</div>
+    <!-- End body -->
+}
+else
+{
+    <h2 style="color:red;">Bạn đang truy cập nội dung cần đăng nhập hoặc đăng ký</h2>
+}
+
+
+@section Script {
+    <script>
+        function getUserContent(contentType, clickedElement) {
+
+            document.querySelector('.chosen').classList.remove('chosen');
+            clickedElement.classList.add('chosen');
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                document.querySelector('.contents').innerHTML = this.responseText;
+            }
+
+            xhttp.open("GET", `/User/GetUserContent?contentType=${contentType}`);
+            xhttp.send();
+        }
+
+        function getOrderDetails(orderId, modalSelector, renderContent) {
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                document.querySelector(renderContent).innerHTML = this.responseText;
+            }
+            toggleModal(modalSelector);
+
+            xhttp.open("GET", `/User/GetOrderDetails?oid=${orderId}`);
+            xhttp.send();
+            document.querySelector(renderContent).innerHTML = "Đang tải. Xin đợi trong giây lát ...";
+        }
+    </script>
+    @if (ViewBag.Status != null)
+    {
+        if ((bool)ViewBag.Status == true)
+        {
+            <script>
+                showToast({
+                    title: "Cập nhật thông tin thành công",
+                    content: "@ViewBag.Message",
+                    type: "info"
+                });
+            </script>
+        }
+        else
+        {
+            <script>
+                showToast({
+                    title: "Cập nhật thông tin thất bại",
+                    content: "@ViewBag.Message",
+                    type: "error"
+                });
+            </script>
+        }
+    }
+}

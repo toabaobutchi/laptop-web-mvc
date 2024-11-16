@@ -1,0 +1,86 @@
+﻿@model IEnumerable<MyLaptopWebsite.Models.SanPham>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+<style>
+    #renderInfo img {
+        max-width: 150px;
+    }
+</style>
+
+<h1 class="mb-4 border-bottom">Quản lý sản phẩm</h1>
+
+<p>
+    <a asp-action="Create" asp-controller="SanPham" asp-area="Admin" class="btn btn-success"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Thêm sản phẩm mới</a>
+</p>
+
+@if(Model == null || Model.Count() == 0)
+{
+    <h4 class="text-danger fw-bold"> Chưa có sản phẩm nào ! </h4>
+}
+else
+{
+    <div class="row">
+        <div id="renderTableContent" class="col-7">
+            <partial name="_pvProductTable" model="Model"></partial>
+        </div>
+        <div class="col-5" id="renderInfo"></div>
+    </div>
+}
+
+<script>
+    function filter(select) {
+        const xhttp = new XMLHttpRequest();
+
+        xhttp.onload = function () {
+            document.getElementById('renderTableContent').innerHTML = this.responseText;
+        }
+
+        xhttp.open("GET", "/Admin/SanPham/FilterProduct?id=" + select.value);
+        xhttp.send();
+    }
+
+    function renderImages(id, btn) {
+        const xhttp = new XMLHttpRequest();
+        document.getElementById('renderInfo').innerHTML = `<div class="spinner-border text-info" role="status"></div> <span class='text-info'>Loading...</span>`;
+        xhttp.onload = function () {
+            document.getElementById('renderInfo').innerHTML = this.responseText;
+        }
+
+        xhttp.open("GET", "/Admin/SanPham/GetProductImages?id=" + id);
+        xhttp.send();
+    }
+    function removeImage(imageId, btn) {
+        if (confirm("Bạn chắc sẽ xoá hình ảnh này chứ ?")) {
+            var img = document.getElementById(`imageId${imageId}`);
+            if (img) img.remove();
+            btn.remove();
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                // do nothing ...
+            }
+
+            xhttp.open("GET", `/Admin/SanPham/RemoveProductImage?iid=${imageId}`);
+            xhttp.send();
+        }
+    }
+    function renderPage(action, pid) {
+        const xhttp = new XMLHttpRequest();
+
+        xhttp.onload = function () {
+            document.getElementById('renderInfo').innerHTML = this.responseText;
+        }
+
+        xhttp.open("GET", `/Admin/SanPham/${action}?pid=${pid}`);
+        xhttp.send();
+    }
+    function clickOnRow(row) {
+        var currentRow = document.querySelector('.table-light');
+        if (currentRow) currentRow.classList.remove('table-light');
+        row.classList.add('table-light');
+    }
+</script>

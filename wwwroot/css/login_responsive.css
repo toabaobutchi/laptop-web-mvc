@@ -1,0 +1,6 @@
+﻿@media (max-width: 1100px) {
+    .form-input label {
+        flex: 100%;
+        padding: 10px 0;
+    }
+}

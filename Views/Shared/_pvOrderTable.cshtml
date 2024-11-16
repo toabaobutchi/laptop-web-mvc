@@ -1,0 +1,69 @@
+﻿@using MyLaptopWebsite.Utils
+@model IEnumerable<HoaDon>
+
+<table class="table w-auto" id="renderOrder">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MaDonHang)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayLap)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TinhTrang)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayGiaoHang)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ThanhTien)
+            </th>
+            <th>
+                Khách hàng
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaDonHang)
+                </td>
+                <td>
+                    @item.NgayLap.ToShortDateString()
+                </td>
+                <td id="state@(item.MaDonHang)">
+                    @(OrderState.getStateLabel(item.TinhTrang ?? 0))
+                </td>
+                <td id="shippingDay@(item.MaDonHang)">
+                    @(item.NgayGiaoHang?.ToShortDateString() ?? "Chưa xác định")
+                </td>
+                <td>
+                    @(Formater.ToCurrency(item.ThanhTien)) VND
+                </td>
+                <td>@item.MaNguoiDungNavigation.Email</td>
+                <td>
+                    @if (item.TinhTrang == null || item.TinhTrang.Value == 0)
+                    {
+                        <a asp-action="ShipOrder" asp-controller="Order" asp-area="Admin" asp-route-oid="@item.MaDonHang" class="btn btn-info">
+                            <i class="fa fa-truck" aria-hidden="true"></i> Giao hàng
+                        </a>
+                    }
+                    else if (item.TinhTrang != null && item.TinhTrang.Value == 1)
+                    {
+                        <a asp-action="Finish" asp-controller="Order" asp-area="Admin" asp-route-oid="@item.MaDonHang" class="btn btn-success">
+                            <i class="fa fa-check" aria-hidden="true"></i> Hoàn thành
+                        </a>
+                    }
+                    else
+                    {
+                        <i class="fa fa-check-square-o text-success" aria-hidden="true"></i>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

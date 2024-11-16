@@ -1,0 +1,43 @@
+﻿@model IEnumerable<HinhAnhSanPham>
+
+@{
+    SanPham s = ViewBag.Product;
+}
+
+<h3 class="border-bottom mb-3"><i class="fa fa-file-image-o" aria-hidden="true"></i> Hình ảnh cho sản phẩm</h3>
+@if (Model == null || Model.Count() == 0)
+{
+    <p class="text-warning"> Chưa có hình ảnh nào cho sản phẩm </p>
+}
+else
+{
+    <style>
+        #imageContainer {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        }
+    </style>
+    <p class="text-primary fw-bold">@s.TenSp</p>
+    <div class="d-flex flex-wrap" id="imageContainer">
+    @foreach(var item in Model)
+    {
+        <div class="position-relative text-light">
+            <img src="~/images/@item.HinhAnh" class="img-thumbnail m-2" id="imageId@(item.MaHinhAnh)"/>
+            <button class="position-absolute btn btn-danger top-0 end-0 p-2 fw-bold"  style="cursor: pointer;" onclick="removeImage(@item.MaHinhAnh, this)"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+        </div>
+    }
+    </div>
+}
+
+<form asp-action="AddImages" method="post" enctype="multipart/form-data" class="mt-3">
+    <input type="hidden" name="productId" id="productId" value="@s.MaSp" />
+    <div>
+        <label for="images" class="btn btn-outline-primary"><i class="fa fa-file-image-o" aria-hidden="true"></i> Chọn hình ảnh cho sản phẩm</label>
+        <input name="images" id="images" type="file" class="visually-hidden" multiple accept="image/*" onchange="displayImages(this, '#renderImg')" />
+        <div id="renderImg"></div>
+    </div>
+    <div class="mt-2">
+        <input type="submit" value="Thêm hình ảnh" class="btn btn-success btn-sm"  />
+    </div>
+</form>

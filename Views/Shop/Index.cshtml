@@ -1,0 +1,147 @@
+﻿@using MyLaptopWebsite.Utils
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@model IEnumerable<SanPham>
+
+@{
+    ViewBag.Title = "Cửa hàng";
+    IEnumerable<NhaSanXuat> nsx = ViewBag.HangSX;
+    IEnumerable<ThongSoKyThuat> tskt = ViewBag.TSKT;
+    var cart = Context.Session.Get<List<CartDetail>>("cart");
+}
+
+@section Style {
+    <link rel="stylesheet" href="~/css/shop.css" />
+    <link rel="stylesheet" href="~/css/shop_responsive.css">
+}
+
+<div class="body">
+    <!-- Start filter product -->
+    <div class="product-filters">
+        <h3 id="filters-header"><ion-icon name="funnel"></ion-icon> Bộ lọc sản phẩm</h3>
+        <form asp-action="Search" asp-controller="Shop" asp-area="" method="get">
+            <input name="q" type="hidden" value="@ViewBag.SearchString" />
+
+            <!-- Start # Brand filter -->
+            <div class="product-filter-input-group">
+                <div class="product-filter-input-title">Hãng sản xuất</div>
+                <div class="product-filter-input">
+                    <input type="radio" name="brand" id="brand-0" value="0" />
+                    <label for="brand-0">Tất cả</label>
+                </div>
+                @foreach (var n in nsx)
+                {
+                    <div class="product-filter-input">
+                        <input type="radio" name="brand" id="brand-@n.MaNsx" value="@n.MaNsx" @(ViewBag.Brand == n.MaNsx ? "checked" : "") />
+                        <label for="brand-@n.MaNsx">@n.TenNsx</label>
+                    </div>
+                }
+            </div>
+            <!-- End # Brand filter -->
+
+            <!-- Start # Screen filter -->
+            <div class="product-filter-input-group">
+                <div class="product-filter-input-title">Màn hình</div>
+                <div class="product-filter-input">
+                    <input type="radio" name="screen" id="screen-0" value="0" />
+                    <label for="screen-0">Tất cả</label>
+                </div>
+                @foreach(var t in tskt.Select(t => new { t.KichThuocManHinh, t.MaThongSo }).DistinctBy(t => t.KichThuocManHinh).OrderBy(t => t.KichThuocManHinh))
+                {
+                    <div class="product-filter-input">
+                        <input type="radio" name="screen" id="screen-@t.MaThongSo" value="@t.KichThuocManHinh" @(ViewBag.Screen == t.KichThuocManHinh ? "checked" : "") />
+                        <label for="screen-@t.MaThongSo">@t.KichThuocManHinh inches</label>
+                    </div>
+                }
+            </div>
+            <!-- End # Screen filter -->
+
+            <!-- Start # CPU filter -->
+            <div class="product-filter-input-group">
+                <div class="product-filter-input-title">CPU</div>
+                <div class="product-filter-input">
+                    <select name="cpu" id="cpu">
+                        <option value="0">Tất cả</option>
+                        @foreach(var c in tskt.Select(t => t.Cpu.Split(' ')[0]).Distinct())
+                        {
+                            if (ViewBag.Cpu == c)
+                            {
+                                <option value="@c" selected>@c</option>
+                            }
+                            else
+                            {
+                                <option value="@c">@c</option>
+                            }
+                            
+                        }
+                    </select>
+                </div>
+            </div>
+            <!-- End # CPU filter -->
+
+            <!-- Start # Sorting -->
+            <div class="product-filter-input-group">
+                <div class="product-filter-input-title">Sắp xếp theo</div>
+                <div class="product-filter-input">
+                    <input type="radio" name="sortBy" id="sortBy-0" value="0" @(ViewBag.SortBy == 0 ? "checked" : "") />
+                    <label for="sortBy-0">% Đang giảm giá</label>
+                </div>
+                <div class="product-filter-input">
+                    <input type="radio" name="sortBy" id="sortBy-1" value="1" @(ViewBag.SortBy == 1 ? "checked" : "") />
+                    <label for="sortBy-1"><ion-icon name="trending-up-outline"></ion-icon> Giá thấp - cao</label>
+                </div>
+                <div class="product-filter-input">
+                    <input type="radio" name="sortBy" id="sortBy-2" value="2" @(ViewBag.SortBy == 2 ? "checked" : "") />
+                    <label for="sortBy-2"><ion-icon name="trending-down-outline"></ion-icon> Giá cao - thấp</label>
+                </div>
+            </div>
+            <!-- End # Sorting -->
+
+            <div class="product-filter-input-group">
+                <div class="product-filter-input">
+                    <input type="submit" class="operation-btn" value="Lọc sản phẩm" />
+                </div>
+                <div class="product-filter-input">
+                    <input type="reset" class="operation-btn" value="Xoá lựa chọn của tôi" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- End filter product -->
+    <!-- Start shop -->
+    <div class="area shop">
+        <!-- Start area body -->
+        @if(Model != null && Model.Count() != 0)
+        {
+            <div class="area-body">
+                @foreach(var sp in Model)
+                {
+                    <partial name="_pvProductCard" model="sp" />
+                }
+            </div>
+            
+            @* <div class="more-btn">
+                <button>Xem thêm <ion-icon name="bag-add-outline"></ion-icon></button>
+            </div> *@
+        }
+        else
+        {
+            <h4 style="color: orangered; font-size: 1.2rem;">Không có sản phẩm nào phù hợp</h4>
+        }
+        @Html.PagedListPager((IPagedList)Model, page => Url.Action("Search", new {
+            page,
+            q = @ViewBag.SearchString,
+            brand = @ViewBag.Brand,
+            screen = @ViewBag.Screen,
+            sortBy = @ViewBag.SortBy,
+            cpu = @ViewBag.Cpu
+        }))
+        <!-- End area body -->
+        
+    </div>
+    <!-- End shop -->
+</div>
+
+@section Script {
+    @* <script>toStickyNavigation()</script> *@
+}

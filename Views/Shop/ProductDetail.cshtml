@@ -1,0 +1,262 @@
+﻿@model SanPham
+@section Style {
+    <link rel="stylesheet" href="~/css/detail.css">
+    <link rel="stylesheet" href="~/css/detail_responsive.css">
+}
+
+@using MyLaptopWebsite.Utils
+@{
+    var cart = Context.Session.Get<List<CartDetail>>("cart");
+    ViewBag.Tittle = "Chi tiết sản phẩm";
+}
+
+<div class="body">
+    <div class="product-overview-info">
+        <!-- Start product images -->
+        <div class="product-images">
+            <div class="main-product-image pos-r">
+                <img src="~/images/@Model.HinhAnhSanPhams.First().HinhAnh" alt="main image" />
+                <button id="show-gallery">
+                    <img src="~/images/logo-img.jpg" alt="image logo">
+                    <span class="title">Xem tất cả ảnh</span>
+                </button>
+            </div>
+            <div class="gallery">
+                <div class="collection">
+                    <ion-icon name="chevron-back-outline" onclick="moveView(-1)"></ion-icon>
+                    @{
+                        int i = 0;
+                                        <img src="/images/@Model.HinhAnhSanPhams.First().HinhAnh" class="show" alt="main image" />
+                        foreach(var img in Model.HinhAnhSanPhams)
+                        {
+                            if(i != 0)
+                            {
+                                <img src="/images/@img.HinhAnh" alt="main image" />
+                            }
+                            i++;
+                        }
+                    }
+                    <ion-icon name="chevron-forward-outline" onclick="moveView(1)"></ion-icon>
+                    <ion-icon name="close-outline"></ion-icon>
+                </div>
+            </div>
+        </div>
+        <!-- End product images -->
+        <!-- Start product intro -->
+        <div class="product-intro">
+            <h1>@Model.TenSp</h1>
+            <p id="vote-stars">
+                @(Model.DanhGia.Count() != 0 ? Model.DanhGia.Average(d => d._DanhGia).ToString("F1") : 0) <ion-icon name="star" class="show"></ion-icon> (@Model.DanhGia.Count() đánh giá)
+            </p>
+            <p>
+                <strong> Giá: </strong>
+                @{
+                    if(Model.ThongTinGiamGia != null)
+                    {
+                        <del> @Model.DonGia VND</del>
+                    }
+                    <span> @{
+                        decimal giamgia = Model.ThongTinGiamGia != null ? 1 - (Model.ThongTinGiamGia.MucGiamGia / 100.0m) : 1;
+                        <text>@(Formater.ToCurrency(Model.DonGia * giamgia)) VND</text>
+                    } </span>
+                }
+            </p>
+            <p><strong>Mô tả</strong></p>
+            <p>
+                @Model.BaiViet
+            </p>
+            <div class="actions">
+                <div class="quantity-input">
+                    <label for="quantity">Số lượng</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" />
+                </div>
+                <div style="width: 50%;">
+                    @{
+                        ViewBag.MaSp = Model.MaSp;
+                        ViewBag.InputQuantity = "'#quantity'";
+                    }
+                    <partial name="_pvAddToCartButton" model="(cart != null && cart.FirstOrDefault(c => c.ProductId == Model.MaSp) != null)" />
+                </div>
+                
+            </div>
+        </div>
+        <!-- End product intro -->
+    </div>
+    <div class="product-main-info">
+
+        <partial name="_pvSpecifications" model="Model.ThongSoKyThuat">
+
+        <!-- Start other info -->
+            @{
+                IEnumerable<SanPham> otherProducts = ViewBag.OtherProducts;
+                ViewBag.MaSP = Model.MaSp;
+            }
+        <div class="other-info">
+            <div class="product-info-tags">
+                <div class="product-info-tag-item show" onclick="switchContent('relatedProducts', @Model.MaNsx, this)">Các sản phẩm tương tự
+                </div>
+                <div class="product-info-tag-item" onclick="switchContent('votesAndComments', @Model.MaSp, this)">Bình luận & đánh giá
+                </div>
+            </div>
+            <div class="product-info-list">
+                <partial name="_pvRelatedProduct" model="otherProducts" />
+            </div>
+        </div>
+        <!-- End other info -->
+    </div>
+</div>
+<!-- End body -->
+
+@section Script {
+    <script>
+        function voteStar() {
+            var checkboxs = document.querySelectorAll('input[type=checkbox]');
+            for (var i = 0; i < checkboxs.length; ++i) {
+                checkboxs[i].onclick = function () {
+                    for (var k = 0; k < checkboxs.length; ++k) {
+                        checkboxs[k].checked = false;
+                    }
+                    this.checked = true;
+                    for (var j = 0; checkboxs[j] !== this; ++j) {
+                        checkboxs[j].checked = true;
+                    }
+                }
+            }
+        }
+        var showGalleryButton = document.querySelector('#show-gallery');
+        showGalleryButton.onclick = function () {
+            document.querySelector('.gallery').classList.add('overlay');
+        }
+
+        function getImagesInCollection() {
+            var images = document.querySelector('.collection').children;
+            images = Array.from(images).filter((img) => img.localName == 'img');
+            return images;
+        }
+
+        function moveView(mount = 1) {
+            images = getImagesInCollection();
+
+            // lấy chỉ số của thẻ img đang được hiển thị
+            var currentShowIndex = images.findIndex(img => img.classList.contains('show'));
+
+            // tính toán chỉ số của hình ảnh tiếp theo sẽ được hiển thị
+            var nextShowIndex = (currentShowIndex + mount) % images.length;
+            if (nextShowIndex < 0)
+                nextShowIndex = images.length - 1;
+
+            images[currentShowIndex].classList.remove('show');
+            images[nextShowIndex].classList.add('show');
+        }
+        function hideOverlay() {
+            var galleryOverlay = document.querySelector('.gallery');
+            galleryOverlay.onclick = function (e) {
+                if (e.target === this) {
+                    this.classList.remove('overlay');
+                }
+            }
+            var closeBtn = document.querySelector('.collection ion-icon:last-child');
+            closeBtn.onclick = function (e) {
+                galleryOverlay.classList.remove('overlay');
+            }
+        }
+        hideOverlay();
+
+        function switchContent(contentType, pid, clickedElement) {
+            const xhttp = new XMLHttpRequest();
+            
+            xhttp.onload = function () {
+                document.querySelector('.product-info-tag-item.show').classList.remove('show');
+                clickedElement.classList.add('show');
+                document.querySelector('.product-info-list').innerHTML = this.responseText;
+                if (contentType === 'votesAndComments') {
+                    voteStar();
+                }
+                
+            }
+            document.querySelector('.product-info-list').innerHTML = '<p> Đang tải nội dung. Vui lòng chờ trong giây lát ...  <p>';
+            xhttp.open("GET", `/Shop/RenderContent?contentType=${contentType}&pid=${pid}`);
+            xhttp.send();
+        }
+
+        function createReplyTextField(btn, commentId, pid) {
+            // xoá phần tử textarea hiện tại
+            var replyInput = document.querySelector('.comment-reply-input');
+            if (replyInput) replyInput.remove();
+
+            var commentContainer = btn.parentNode.parentNode.parentNode.parentNode;
+
+            commentContainer.innerHTML += `<div class="comment comment-reply comment-reply-input">
+                              <textarea autofocus></textarea>
+                                      <button onclick="addReply(${commentId}, ${pid})"><ion-icon name="paper-plane"></ion-icon></button>
+                            </div>`;
+        }
+
+        function addComment(pid) {
+            var textarea = document.querySelector('.comment-input textarea');
+            var comment = textarea.value;
+            
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                var res = JSON.parse(this.responseText);
+                if (res['status']) { // nhận xác nhận từ server
+                    var generatedComment = `<div class="comment-item">
+                                    <div class="comment">
+                                      <div class="user-info">
+                                                <p class="avatar"><span><ion-icon name="help-outline"></ion-icon></span> ${res['uname']}</p>
+                                      </div>
+                                      <div class="comment-text">
+                                        <p>${comment}</p>
+                                        <p>
+                                          <button class="rep" onclick="createReplyTextField(this)">
+                                            <ion-icon name="chatbubble"></ion-icon> Trả lời
+                                          </button>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>`;
+                    var currentHTML = document.querySelector('.comment-history').innerHTML;
+                    document.querySelector('.comment-history').innerHTML = generatedComment + currentHTML;
+                    textarea.value = '';
+                }
+            }
+            var url = `/Comment/AddComment?pid=${pid}&comment=${comment}`;
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+
+        function addReply(commentId, pid) {
+            var textarea = document.querySelector('.comment-reply-input textarea');
+            var reply = textarea.value;
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                var res = JSON.parse(this.responseText);
+                if (res['status']) {
+                    var generatedReply = `<div class="comment comment-reply">
+                                      <div class="user-info">
+                                                <p class="avatar admin"><span><ion-icon name="chatbubbles"></ion-icon></span> ${res['uname']}</p>
+                                      </div>
+                                      <div class="comment-text">
+                                        <p>${reply}</p>
+                                        <p></p>
+                                      </div>
+                                    </div>`;
+                    var container = document.querySelector('.comment-reply-input').parentNode;
+                    container.innerHTML += generatedReply;
+                    textarea.value = '';
+                    document.querySelector('.comment-reply-input').remove();
+                }
+            }
+
+            var url = `/Comment/AddReply?pid=${pid}&reply=${reply}&commentId=${commentId}`;
+
+            xhttp.open("GET", url);
+            xhttp.send();
+        }
+        
+    </script>
+}

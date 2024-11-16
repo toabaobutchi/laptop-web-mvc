@@ -1,0 +1,40 @@
+﻿@model MyLaptopWebsite.Models.DipGiamGia
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 class="text-success">Thêm dịp giảm giá</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <p class="text-info fw-bold"> Mã dịp giảm giá sẽ được tạo tự động !</p>
+            <div class="form-group">
+                <label asp-for="TenDipGiamGia" class="control-label"></label>
+                <input asp-for="TenDipGiamGia" class="form-control" />
+                <span asp-validation-for="TenDipGiamGia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayBatDau" class="control-label"></label>
+                <input asp-for="NgayBatDau" class="form-control" />
+                <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayHetHan" class="control-label"></label>
+                <input asp-for="NgayHetHan" class="form-control" />
+                <span asp-validation-for="NgayHetHan" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Thêm dịp giảm giá" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-primary">Trở lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
